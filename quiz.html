@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KBK QUIZ</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #quiz-container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+#container{
+    max-width: 800px;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+    .question {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px auto;
+        }
+
+        .image-box {
+            width: 150px;
+            height: 150px;
+            border: 3px dashed #ccc;
+            overflow: hidden;
+            cursor: pointer;
+            margin: 0 10px;
+            border-radius: 8px;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        .image-box:hover {
+            border-color: #ff0051;
+        }
+
+        .image-box img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        #result {
+            margin-top: 30px;
+            font-size: 24px;
+            display: none;
+            color: #0073ff;
+        }
+
+        #drop-container {
+            width: 150px;
+            height: 150px;
+            border: 3px dashed #0073ff;
+            margin: 20px auto;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            color: #333;
+           
+        }
+
+        #final-screen {
+            display: none;
+            background-color: #0073ff;
+            color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        #final-message {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        #correct-answers {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        #language-selector {
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #0073ff;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+            border: solid 2px;
+            border-color: #ff0051;
+            
+        }
+
+        button:hover {
+            background-color: #ff0051;
+        }
+    </style>
+</head>
+<body>
+  
+<div id="quiz-container">
+    <div id="language-selector">
+        <button  onclick="startQuizAndChangeLanguage('ru')">RU</button>
+        <button onclick="startQuizAndChangeLanguage('kz')">KZ</button>
+    </div>
+    <div class="question" id="question"></div>
+    <div class="image-container" id="image-container"></div>
+    <div id="result"></div>
+    <div id="drop-container" ondrop="drop(event)" ondragover="allowDrop(event)">
+        Перетащите сюда правильное изображение
+    </div>
+</div>
+    <div id="container">
+    <div id="final-screen">
+        <h2 id="final-message"></h2>
+        <p id="correct-answers"></p>
+        <button id="btn1" onclick="restartQuiz()">Следующий</button>
+    </div>
+</div>
+
+
+<script>
+    const quizData = {
+        'ru': [
+        {
+            question: "Вопрос 1: Какое изображение соответствует языку программирования Python?",
+            images: [
+                "python.png",
+                "java.png",
+                "csharp.png"
+            ],
+            correctAnswer: "python.png"
+        },
+        {
+            question: "Вопрос 2: Какое изображение соответствует языку программирования Java?",
+            images: [
+            "csharp.png",
+            "python.png",
+            "java.png",
+                ],
+            correctAnswer: "java.png"
+        },
+        {
+            question: "Вопрос 3: Какое изображение соответствует языку программирования C#?",
+            images: [
+            "java.png",
+            "python.png",
+                "csharp.png",
+            ],
+            correctAnswer: "csharp.png"
+        },
+        {
+            question: "Вопрос 4: Какое изображение соответствует языку программирования HTML?",
+            images: [
+                "html.png",
+                "css.png",
+                "javascript.png"
+            ],
+            correctAnswer: "html.png"
+        },
+        {
+            question: "Вопрос 5: Какое изображение соответствует языку программирования CSS?",
+            images: [
+            "css.png",
+            "javascript.png",
+            "html.png",
+            ],
+            correctAnswer: "css.png"
+        },
+        {
+            question: "Вопрос 6: Какой из этих дисков используется для долгосрочного хранения данных?",
+            images: [
+                "hard_drive.png",
+                "sdd.png",
+                "usb_flash_drive.png"
+            ],
+            correctAnswer: "hard_drive.png"
+        },
+        {
+            question: "Вопрос 7: Какое изображение представляет собой мышь?",
+            images: [
+                "mouse.png",
+                "keyboard.png",
+                "headphones.png"
+            ],
+            correctAnswer: "mouse.png"
+        },
+        {
+            question: "Вопрос 8: Какой из этих портов чаще всего используется для подключения мыши и клавиатуры?",
+            images: [
+                "usb_port.png",
+                "hdmi_port.png",
+                "ethernet_port.png"
+            ],
+            correctAnswer: "usb_port.png"
+        },
+        {
+            question: "Вопрос 9: Какое изображение представляет собой компьютерный монитор?",
+            images: [
+                "monitor.png",
+                "printer.png",
+                "scanner.png"
+            ],
+            correctAnswer: "monitor.png"
+        },
+        {
+            question: "Вопрос 10: Какой из этих элементов компьютера отвечает за временное хранение данных в процессе их обработки?",
+            images: [
+                "ram.png",
+                "cpu.png",
+                "gpu.png"
+            ],
+            correctAnswer: "ram.png"
+        } 
+        ],
+        'kz': [
+        {
+            question: "1-сұрақ: Python бағдарламалау тіліне қандай сурет сәйкес келеді?",
+            images: [
+                "python.png",
+                "java.png",
+                "csharp.png"
+            ],
+            correctAnswer: "python.png"
+        },
+        {
+            question: "2-сұрақ: Java бағдарламалау тіліне қандай сурет сәйкес келеді?",
+            images: [
+                "python.png",
+                "java.png",
+                "csharp.png"
+            ],
+            correctAnswer: "java.png"
+        },
+        {
+            question: "3-сұрақ: C # бағдарламалау тіліне қандай сурет сәйкес келеді?",
+            images: [
+                "python.png",
+                "java.png",
+                "csharp.png"
+            ],
+            correctAnswer: "csharp.png"
+        },
+        {
+            question: "4-сұрақ: HTML бағдарламалау тіліне қандай сурет сәйкес келеді?",
+            images: [
+                "html.png",
+                "css.png",
+                "javascript.png"
+            ],
+            correctAnswer: "html.png"
+        },
+        {
+            question: "5-сұрақ: CSS бағдарламалау тіліне қандай сурет сәйкес келеді?",
+            images: [
+                "html.png",
+                "css.png",
+                "javascript.png"
+            ],
+            correctAnswer: "css.png"
+        },
+        {
+            question: "6-сұрақ: бұл дискілердің қайсысы ұзақ мерзімді сақтау үшін қолданылады?",
+            images: [
+                "hard_drive.png",
+                "ssd.png",
+                "usb_flash_drive.png"
+            ],
+            correctAnswer: "hard_drive.png"
+        },
+        {
+            question: "7-сұрақ: тышқан қандай суретті бейнелейді?",
+            images: [
+                "mouse.png",
+                "keyboard.png",
+                "headphones.png"
+            ],
+            correctAnswer: "mouse.png"
+        },
+        {
+            question: "8-сұрақ: тінтуір мен пернетақтаны қосу үшін осы порттардың қайсысы жиі қолданылады?",
+            images: [
+                "usb_port.png",
+                "hdmi_port.png",
+                "ethernet_port.png"
+            ],
+            correctAnswer: "usb_port.png"
+        },
+        {
+            question: "9-сұрақ: компьютер мониторы қандай сурет?",
+            images: [
+                "monitor.png",
+                "printer.png",
+                "scanner.png"
+            ],
+            correctAnswer: "monitor.png"
+        },
+        {
+            question: "10-сұрақ: Компьютердің осы элементтерінің қайсысы өңдеу процесінде деректерді уақытша сақтауға жауапты?",
+            images: [
+                "ram.png",
+                "cpu.png",
+                "gpu.png"
+            ],
+            correctAnswer: "ram.png"
+        }
+        ]
+    };
+
+    function startQuizAndChangeLanguage(language) {
+        changeLanguage(language)
+        setLanguage(language);
+    }
+
+    let currentQuestion = 0;
+    let correctAnswersCount = 0;
+    let currentLanguage = 'ru';
+    const languageData = {
+        'ru': {
+            dropContainer: 'Перетащите сюда правильное изображение',
+            btn1: 'Следующий',
+        },
+        'kz': {
+            dropContainer: 'Дұрыс суретті осы жерге сүйреңіз',
+            btn1: 'Келесі',
+        }
+    };
+
+    function setLanguage(lang) {
+        currentLanguage = lang;
+        document.getElementById('drop-container').textContent = languageData[currentLanguage].dropContainer;
+        document.getElementById('btn1').textContent = languageData[currentLanguage].btn1;
+    }
+
+    function loadQuestion() {
+        const quizContainer = document.getElementById("quiz-container");
+        const questionElement = document.getElementById("question");
+        const imageContainer = document.getElementById("image-container");
+        const dropContainer = document.getElementById("drop-container");
+        const resultElement = document.getElementById("result");
+        const finalScreen = document.getElementById("final-screen");
+        const container = document.getElementById("container");
+        const startScreen = document.getElementById("start-screen");
+
+        if (currentQuestion < quizData[currentLanguage].length) {
+            quizContainer.style.display = "block";
+            resultElement.style.display = "block";
+            finalScreen.style.display = "none";
+            container.style.display = "none";
+
+            questionElement.textContent = quizData[currentLanguage][currentQuestion].question;
+            imageContainer.innerHTML = "";
+
+            const images = quizData[currentLanguage][currentQuestion].images;
+
+            images.forEach((image, index) => {
+                const imageBox = document.createElement("div");
+                imageBox.className = "image-box";
+                imageBox.setAttribute("draggable", "true");
+                imageBox.setAttribute("ondragstart", `drag(event, '${image}')`);
+
+                const img = new Image();
+                img.src = image;
+
+                imageBox.appendChild(img);
+                imageContainer.appendChild(imageBox);
+            });
+
+            dropContainer.innerHTML = "";
+        } else {
+            quizContainer.style.display = "none";
+            resultElement.style.display = "none";
+            container.style.display = "block";
+            finalScreen.style.display = "block";
+
+            const finalMessage = document.getElementById("final-message");
+            const correctAnswersElement = document.getElementById("correct-answers");
+
+            if (correctAnswersCount === quizData[currentLanguage].length) {
+                finalMessage.textContent = "Поздравляю! Вы ответили правильно на все вопросы!";
+            } else if (correctAnswersCount > quizData[currentLanguage].length / 2) {
+                finalMessage.textContent = "Отличный результат! Вы ответили правильно на большинство вопросов!";
+            } else {
+                finalMessage.textContent = "Спасибо за участие. Попробуйте еще раз!";
+            }
+
+            correctAnswersElement.textContent = `Правильных ответов: ${correctAnswersCount} из ${quizData[currentLanguage].length}`;
+        }
+    };
+
+    function allowDrop(event) {
+        event.preventDefault();
+    };
+
+    function drag(event, image) {
+        event.dataTransfer.setData("text", image);
+    };
+
+    function drop(event) {
+        event.preventDefault();
+        const resultElement = document.getElementById("result");
+        const draggedImageSrc = event.dataTransfer.getData("text");
+        const correctAnswer = quizData[currentLanguage][currentQuestion].correctAnswer;
+
+        if (draggedImageSrc === correctAnswer) {
+            resultElement.textContent = "Верно!";
+            correctAnswersCount++;
+        } else {
+            resultElement.textContent = "Неверно!";
+        }
+
+        currentQuestion++;
+        loadQuestion();
+    };
+
+    function nextQuestion() {
+        loadQuestion();
+    };
+
+    function restartQuiz() {
+        window.location.href = 'crans.html';
+    };
+    function changeLanguage(language) {
+        currentLanguage = language;
+        currentQuestion = 0;
+        correctAnswersCount = 0;
+        loadQuestion();
+    };
+
+    // Загрузка первого вопроса при загрузке страницы
+    loadQuestion();
+</script>
+
+</body>
+</html>
+

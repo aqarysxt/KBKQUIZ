@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KBK QUIZ</title>
+</head>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        text-align: center;
+        background-color: #f8f8f8;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    h1 {
+        font-size: 28px;
+        margin-bottom: 20px;
+        color: #333;
+    }
+    
+    p {
+        font-size: 18px;
+        margin-bottom: 20px;
+        color: #555;
+    }
+    
+    input {
+        padding: 10px;
+        font-size: 16px;
+    }
+    
+    button {
+        padding: 10px 20px;
+        font-size: 18px;
+        background-color: #0073ff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+    }
+    
+    button:hover {
+        background-color: #ff0051;
+    } 
+    .but{
+        margin-top: 20px;
+    }
+    .text{ 
+        color: #0073ff;
+        margin-top: 50px; 
+        font-size: 50px;
+        font-weight: 500;
+      
+    }
+</style>
+<body>
+<div class="text">
+    KBK QUIZ
+</div>
+<div class="container">
+    <h1 id="welcomeText">Добро пожаловать!</h1>
+    <p id="enterNameText">Введите ваше имя и нажмите кнопку "Пуск".</p>
+    <input type="text" id="nameInput" placeholder="Введите ваше имя">
+    <button id="startButton" onclick="startQuiz()">Пуск</button>
+    
+    <div class="but">
+        <button  onclick="setLanguage('ru')">RU</button>
+        <button onclick="setLanguage('kz')">KZ</button>
+    </div>
+</div>
+
+<script>
+    let playerName = '';
+    let enemyName = '';
+    let currentLanguage = 'ru';
+
+    const languageData = {
+        'ru': {
+            welcome: 'Добро пожаловать!',
+            enterName: 'Введите ваше имя',
+            startButton: 'Пуск',
+            pleaseEnterName: 'Пожалуйста, введите ваше имя.',
+        },
+        'kz': {
+            welcome: 'Қош келдіңіздер!',
+            enterName: 'Атыңызды енгізіңіз',
+            startButton: 'Бастау',
+            pleaseEnterName: 'Өтініш, атыңызды енгізіңіз.',
+        }
+    };
+
+    function setLanguage(lang) {
+        currentLanguage = lang;
+        document.getElementById('welcomeText').textContent = languageData[currentLanguage].welcome;
+        document.getElementById('enterNameText').textContent = languageData[currentLanguage].enterName;
+        document.getElementById('startButton').textContent = languageData[currentLanguage].startButton;
+    }
+
+    function startQuiz() {
+        playerName = document.getElementById('nameInput').value;
+
+        if (playerName.trim() !== '') {
+            window.location.href = 'quiz.html';
+        } else {
+            alert(languageData[currentLanguage].pleaseEnterName);
+        }
+    }
+</script>
+</body>
+</html>
